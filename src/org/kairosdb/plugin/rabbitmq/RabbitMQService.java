@@ -129,7 +129,7 @@ public class RabbitMQService implements KairosDBService
             try
             {
                 connection.close();
-                logger.error("[KairosDB-RabbitMQ] Connection successfully closed.");
+                logger.info("[KairosDB-RabbitMQ] Connection successfully closed.");
             }
             catch(IOException ex)
             {

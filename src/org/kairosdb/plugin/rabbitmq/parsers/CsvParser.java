@@ -88,11 +88,11 @@ public class CsvParser implements Parser
             String tags = parts[i]; // name:flow,unit:m3/min
             String values = parts[i+1]; // 1388530800000:1.16,1388530805000:2.98
 
-            Message.DataPoints foo = new Message.DataPoints();
-            foo.tags = this.parseTags(tags);
-            foo.values = this.parseValues(values);
+            Message.DataPoints messageDataPoints = new Message.DataPoints();
+            messageDataPoints.tags = this.parseTags(tags);
+            messageDataPoints.values = this.parseValues(values);
 
-            datapoints.add(foo);
+            datapoints.add(messageDataPoints);
         }
 
         return datapoints;

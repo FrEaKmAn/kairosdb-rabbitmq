@@ -36,6 +36,17 @@ public interface Parser
         {
             public Map<String, String> tags;
             public SortedMap<Long, String> values;
+
+            public DataPoints()
+            {
+
+            }
+
+            public DataPoints(Map<String, String> tags, SortedMap<Long, String> values)
+            {
+                this.tags = tags;
+                this.values = values;
+            }
         }
     }
 }
