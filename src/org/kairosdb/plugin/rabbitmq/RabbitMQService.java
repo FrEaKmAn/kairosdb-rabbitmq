@@ -31,6 +31,20 @@ public class RabbitMQService implements KairosDBService
     private String rabbitMQQueue = "kairosdb";
 
     /**
+     * The RabbitMQ exchange for rejected messages.
+     */
+    @Inject
+    @Named("kairosdb.plugin.rabbitmq.rejected.exchange")
+    private String rabbitMQRejectedExchange = "kairosdb.rejected";
+
+    /**
+     * The RabbitMQ queue for rejected messages.
+     */
+    @Inject
+    @Named("kairosdb.plugin.rabbitmq.rejected.queue")
+    private String rabbitMQRejectedQueue = "kairosdb.rejected";
+
+    /**
      * The RabbitMQ virtual host.
      */
     @Inject
@@ -112,8 +126,13 @@ public class RabbitMQService implements KairosDBService
             connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
-            Consumer consumer = new RabbitMQConsumer(datastore, channel);
-            channel.basicConsume(rabbitMQQueue, false, consumer);
+            channel.queueDeclare(rabbitMQQueue, true, false, false, null);
+            channel.exchangeDeclare(rabbitMQRejectedExchange, "fanout", true);
+            channel.queueDeclare(rabbitMQRejectedQueue, true, false, false, null);
+            channel.queueBind(rabbitMQRejectedQueue, rabbitMQRejectedExchange, "");
+
+            Consumer consumer = new RabbitMQConsumer(datastore, channel, rabbitMQRejectedExchange);
+            channel.basicConsume(rabbitMQQueue, true, consumer);
         }
         catch(IOException | TimeoutException ex)
         {

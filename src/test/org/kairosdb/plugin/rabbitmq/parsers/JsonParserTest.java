@@ -1,6 +1,5 @@
 package test.org.kairosdb.plugin.rabbitmq.parsers;
 
-import com.rabbitmq.client.AMQP;
 import org.junit.Test;
 import org.kairosdb.plugin.rabbitmq.parsers.JsonParser;
 import org.kairosdb.plugin.rabbitmq.parsers.Parser;
@@ -9,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 public class JsonParserTest
 {
-    private final AMQP.BasicProperties properties = new AMQP.BasicProperties();
     private final Parser parser = new JsonParser();
 
     @Test
@@ -26,7 +24,7 @@ public class JsonParserTest
                 "    tags: {\"name\":\"pressure\", \"unit\": \"barg\"},\n" +
                 "    values: {\"1388530800000\":\"7.10\", \"1388530805000\":\"7.05\"}\n" +
                 "  }]\n" +
-                "}").getBytes(), properties);
+                "}").getBytes());
 
         assertEquals("test", message.metric);
 

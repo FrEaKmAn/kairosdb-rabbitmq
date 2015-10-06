@@ -9,11 +9,12 @@ import org.kairosdb.core.DataPoint;
 import org.kairosdb.core.DataPointSet;
 import org.kairosdb.core.datapoints.DoubleDataPoint;
 import org.kairosdb.core.datapoints.LongDataPoint;
+import org.kairosdb.core.datapoints.StringDataPoint;
 import org.kairosdb.core.datastore.KairosDatastore;
 import org.kairosdb.core.exception.DatastoreException;
 import org.kairosdb.plugin.rabbitmq.parsers.CsvParser;
-import org.kairosdb.plugin.rabbitmq.parsers.Parser;
 import org.kairosdb.plugin.rabbitmq.parsers.JsonParser;
+import org.kairosdb.plugin.rabbitmq.parsers.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +30,25 @@ public class RabbitMQConsumer extends DefaultConsumer
 
     private final Map<String, Parser> parsers = new HashMap<>();
     private final KairosDatastore datastore;
+    private final String rejectedExchange;
 
-    public RabbitMQConsumer(KairosDatastore datastore, Channel channel)
+    public RabbitMQConsumer(KairosDatastore datastore, Channel channel, String rejectedExchange)
     {
         super(channel);
 
         this.datastore = datastore;
+        this.rejectedExchange = rejectedExchange;
 
-        parsers.put("application/json", new JsonParser());
-        parsers.put("text/csv", new CsvParser());
+        this.registerParser(new JsonParser());
+        this.registerParser(new CsvParser());
+    }
+
+    public void registerParser(Parser parser)
+    {
+        for(String contentType: parser.getContentTypes())
+        {
+            this.parsers.put(contentType, parser);
+        }
     }
 
     public Parser getParser(String contentType) throws Parser.InvalidContentTypeException
@@ -61,25 +72,25 @@ public class RabbitMQConsumer extends DefaultConsumer
         try
         {
             Parser parser = getParser(properties.getContentType());
-            Parser.Message dataPoints = parser.parse(body, properties);
+            Parser.Message dataPoints = parser.parse(body);
             save(dataPoints);
-
-            getChannel().basicAck(envelope.getDeliveryTag(), false);
         }
         catch(Parser.ParserException | NumberFormatException ex)
         {
             logger.error("[KairosDB-RabbitMQ] Error parsing message.", ex);
-            getChannel().basicReject(envelope.getDeliveryTag(), true); // can we really parse the message?
+            getChannel().basicPublish(rejectedExchange, "", properties, body);
         }
         catch(Parser.InvalidContentTypeException ex)
         {
-            logger.error("[KairosDB-RabbitMQ] Error parsing for content type " + properties.getContentType() + ".", ex);
-            getChannel().basicReject(envelope.getDeliveryTag(), true); // can we really parse the message?
+            logger.error("[KairosDB-RabbitMQ] Error parsing message with content type " + properties.getContentType() + ".", ex);
+            getChannel().basicPublish(rejectedExchange, "", properties, body);
         }
-        catch(DatastoreException ex)
+        catch (DatastoreException ex)
         {
             logger.error("[KairosDB-RabbitMQ] Error storing datapoints.", ex);
-            getChannel().basicReject(envelope.getDeliveryTag(), true);
+            getChannel().basicPublish(rejectedExchange, "", properties, body);
+
+            // TODO retry?
         }
     }
 
@@ -107,8 +118,7 @@ public class RabbitMQConsumer extends DefaultConsumer
                 }
                 else
                 {
-                    // TODO we could be inserting strings
-                    throw new NumberFormatException(value + " is not a number.");
+                    values.add(new StringDataPoint(timestamp, value));
                 }
             }
 

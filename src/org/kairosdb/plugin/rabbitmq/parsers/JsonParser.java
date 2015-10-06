@@ -1,7 +1,6 @@
 package org.kairosdb.plugin.rabbitmq.parsers;
 
 import com.google.gson.Gson;
-import com.rabbitmq.client.AMQP;
 
 /**
  * {
@@ -27,7 +26,7 @@ public class JsonParser implements Parser
     }
 
     @Override
-    public Message parse(byte[] data, AMQP.BasicProperties properties) throws ParserException
+    public Message parse(byte[] data) throws ParserException
     {
         try
         {
@@ -38,5 +37,11 @@ public class JsonParser implements Parser
         {
             throw new ParserException(ex);
         }
+    }
+
+    @Override
+    public String[] getContentTypes()
+    {
+        return new String[]{ "application/json" };
     }
 }

@@ -1,7 +1,5 @@
 package org.kairosdb.plugin.rabbitmq.parsers;
 
-import com.rabbitmq.client.AMQP;
-
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -11,7 +9,7 @@ import java.util.*;
 public class CsvParser implements Parser
 {
     @Override
-    public Message parse(byte[] data, AMQP.BasicProperties properties) throws ParserException
+    public Message parse(byte[] data) throws ParserException
     {
         try
         {
@@ -34,6 +32,12 @@ public class CsvParser implements Parser
         }
     }
 
+    @Override
+    public String[] getContentTypes()
+    {
+        return new String[]{ "text/csv" };
+    }
+
     protected Map<String, String> parseTags(String part) throws ParserException
     {
         Map<String, String> tags = new HashMap<>();
@@ -44,7 +48,7 @@ public class CsvParser implements Parser
             String[] keyvalue = p.split(":");
             if(keyvalue.length != 2)
             {
-                throw new ParserException(p + " tag is in invalid format.");
+                throw new ParserException(p + " tag has invalid format.");
             }
 
             tags.put(keyvalue[0], keyvalue[1]);
@@ -63,7 +67,7 @@ public class CsvParser implements Parser
             String[] keyvalue = p.split(":");
             if(keyvalue.length != 2)
             {
-                throw new ParserException(p + " datapoint is in invalid format.");
+                throw new ParserException(p + " datapoint has invalid format.");
             }
 
             try

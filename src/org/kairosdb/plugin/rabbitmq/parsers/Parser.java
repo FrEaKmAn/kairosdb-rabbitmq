@@ -1,14 +1,13 @@
 package org.kairosdb.plugin.rabbitmq.parsers;
 
-import com.rabbitmq.client.AMQP;
-
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
 public interface Parser
 {
-    Message parse(byte[] data, AMQP.BasicProperties properties) throws ParserException;
+    Message parse(byte[] data) throws ParserException;
+    String[] getContentTypes();
 
     class ParserException extends Exception
     {
@@ -36,17 +35,6 @@ public interface Parser
         {
             public Map<String, String> tags;
             public SortedMap<Long, String> values;
-
-            public DataPoints()
-            {
-
-            }
-
-            public DataPoints(Map<String, String> tags, SortedMap<Long, String> values)
-            {
-                this.tags = tags;
-                this.values = values;
-            }
         }
     }
 }
