@@ -5,13 +5,13 @@ KairosDB plugin for RabbitMQ. Greatly inspired by https://github.com/hugocore/ka
 
 Copy the files from dist/ to the KairosDB installation folder (if installed by dpkg it's /opt/kairosdb/):
 
-1. **/dist/conf/kairosdb-rabbitmq.conf** to **/opt/kairosdb/conf/kairosdb-rabbitmq.conf**
+1. **/dist/conf/kairosdb-rabbitmq.properties** to **/opt/kairosdb/conf/kairosdb-rabbitmq.properties**
 2. **/dist/lib/kairosdbdb-rabbitmq.jar** to **/opt/kairosdb/lib/kairosdbdb-rabbitmq.jar**
 3. **/dist/lib/rabbitmq-client.jar** to **/opt/kairosdb/lib/rabbitmq-client.jar** (This is the official RabbitMQ Java client. Latest version is 3.5.5)
 
 ## 2. Configuration ##
 
-Plugin has one configuration file **kairosdb-rabbitmq.conf**. There you can define different RabbitMQ parameters.
+Plugin has one configuration file **kairosdb-rabbitmq.properties**. There you can define different RabbitMQ parameters.
 
     kairosdb.plugin.rabbitmq.host = localhost
     kairosdb.plugin.rabbitmq.queue = kairosdb
@@ -53,4 +53,4 @@ CSV is built in format: metricname;tags1;values1;tags2;values2. Each section is 
 
 ## 4. Rejected messages ##
 
-In case if message cannot be consumed, then it forwarded to rejected messages queue. This queue is configurable in .conf file.
+In case if the message cannot be consumed, then it's forwarded to rejected messages exchange. This exchange is configurable in .properties file.
