@@ -18,6 +18,9 @@
 # .idea/dynamic.xml
 # .idea/uiDesigner.xml
 
+# Maven
+/target/
+
 # Gradle:
 # .idea/gradle.xml
 # .idea/libraries
@@ -44,3 +47,12 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
+
+Dockerfile
+docker-compose.yml
+publishers/
+
+META-INF/
+kairosdb-rabbitmq.xml
+kairosdb-rabbitmq.properties
+kairosdb.properties

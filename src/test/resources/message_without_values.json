@@ -1,0 +1,7 @@
+{
+  "metric": "test",
+  "datapoints": [
+  {
+    "tags": {"name": "flow", "unit": "m3/min"}
+  }]
+}
