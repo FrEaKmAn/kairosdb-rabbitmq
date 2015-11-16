@@ -48,11 +48,11 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 
-Dockerfile
-docker-compose.yml
-publishers/
+/Dockerfile
+/docker-compose.yml
+/publishers/
 
-META-INF/
-kairosdb-rabbitmq.xml
-kairosdb-rabbitmq.properties
-kairosdb.properties
+/META-INF/
+/kairosdb-rabbitmq.xml
+/kairosdb-rabbitmq.properties
+/kairosdb.properties
