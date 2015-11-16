@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/FrEaKmAn/kairosdb-rabbitmq.svg)](https://travis-ci.org/FrEaKmAn/kairosdb-rabbitmq)
+
 # kairosdb-rabbitmq
 KairosDB plugin for RabbitMQ. Greatly inspired by https://github.com/hugocore/kairosdb-rabbitmq. Compared to previous plugin, this plugin uses one queue to handle incoming messages. Each message has a metric attribute identifying where to save datapoints.  
 
@@ -78,3 +80,4 @@ In case if the message cannot be consumed, then it's forwarded to rejected messa
     kairosdb.plugin.rabbitmq.rejected.exchange.declare = false
     kairosdb.plugin.rabbitmq.rejected.queue = 
     kairosdb.plugin.rabbitmq.rejected.queue.declare = false
+    ...
